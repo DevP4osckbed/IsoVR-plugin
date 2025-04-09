@@ -66,7 +66,7 @@ namespace Isorld.XR.IsoVR.Editor
         {
             public string packageName => "Iso VR Plugin";
 
-            public string packageId => "file:../Assets/IsoVR-plugin";
+            public string packageId => "com.isorld.vr.isovr";
 
             public string settingsType => typeof(Isorld.XR.IsoVR.XRSettings).FullName;
 
