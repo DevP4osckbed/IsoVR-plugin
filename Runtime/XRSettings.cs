@@ -29,5 +29,7 @@ namespace Isorld.XR.IsoVR
     {
         public string FullName = "IsoVR";
         public float test;
+        public float IPD = 0.5;
+        public bool webSupport = false;
     }
 }
