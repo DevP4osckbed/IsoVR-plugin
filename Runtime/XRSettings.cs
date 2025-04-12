@@ -25,6 +25,7 @@ namespace Isorld.XR.IsoVR
     /// Required by XR Management package.
     /// </summary>
     [System.Serializable]
+    [XRConfigurationData("IsoVR", "Isorld.XR.IsoVR.XRSettings")]
     public class XRSettings : ScriptableObject
     {
         public string FullName = "IsoVR";
