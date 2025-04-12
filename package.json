@@ -1,13 +1,13 @@
 {
     "name": "com.isorld.vr.isovr",
     "displayName": "IsoVR Plugin for Unity",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "author": "DevIso",
     "unity": "2019.4",
     "description": "Provides rendering and input support for Google Cardboard.",
     "keywords": [
         "vr",
-        "xr",
+        "mobile",
         "reality",
         "xreditorsubsystem"
     ],
