@@ -19,6 +19,8 @@
 namespace Isorld.XR.IsoVR
 {
     using UnityEngine;
+    using UnityEngine.XR.Management;
+
 
     /// <summary>
     /// XR Settings for Cardboard XR Plugin.
