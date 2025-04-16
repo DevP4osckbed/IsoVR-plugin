@@ -18,7 +18,7 @@
 
 #if UNITY_EDITOR && UNITY_IOS
 
-namespace Google.XR.Cardboard.Editor
+namespace Isorld.XR.IsoVR.Editor
 {
     using System.Collections.Generic;
     using System.IO;
