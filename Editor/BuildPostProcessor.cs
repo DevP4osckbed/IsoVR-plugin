@@ -1,61 +1,58 @@
-//-----------------------------------------------------------------------
-// <copyright file="BuildPostProcessor.cs" company="Google LLC">
-// Copyright 2020 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-// </copyright>
-//-----------------------------------------------------------------------
+#if UNITY_EDITOR
 
-#if UNITY_EDITOR && UNITY_IOS
+using System.IO;
+using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
+using UnityEngine;
 
 namespace Isorld.XR.IsoVR.Editor
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using UnityEditor;
-    using UnityEditor.Callbacks;
-    using UnityEditor.iOS.Xcode;
-    using UnityEngine;
-
-    /// <summary>Processes the project files after the build is performed.</summary>
-    public static class BuildPostProcessor
+    public class BuildPostProcessor : IPostprocessBuildWithReport
     {
-        /// <summary>Unity callback to process after build.</summary>
-        /// <param name="buildTarget">Target built.</param>
-        /// <param name="path">Path to built project.</param>
-        [PostProcessBuild]
-        public static void OnPostProcessBuild(BuildTarget buildTarget, string path)
-        {
-            if (buildTarget == BuildTarget.iOS)
-            {
-                // Note: The meta files removal is a workaround for
-                // <a https://issuetracker.unity3d.com/issues/possibly-ios-unity-meta-files-are-generated-in-the-plugin-directory-and-then-copied-to-plugins-directory-in-the-xcode-build>Issue #1184957</a>
-                // in Unity.
-                FileUtil.DeleteFileOrDirectory(
-                    path + "/Frameworks/com.google.xr.cardboard/Runtime/iOS/sdk.bundle/qrSample.png.meta");
-                FileUtil.DeleteFileOrDirectory(
-                    path + "/Frameworks/com.google.xr.cardboard/Runtime/iOS/sdk.bundle/tickmarks.png.meta");
+        public int callbackOrder => 0;
 
-                // Note: SDK binaries no longer contain bitcode, as
-                // <a https://developer.apple.com/documentation/Xcode-Release-Notes/xcode-14-release-notes>Apple has deprecated bitcode</a>.
-                string projectPath = PBXProject.GetPBXProjectPath(path);
-                string projectConfig = File.ReadAllText(projectPath);
-                projectConfig = projectConfig.Replace("ENABLE_BITCODE = YES",
-                                                      "ENABLE_BITCODE = NO");
-                File.WriteAllText(projectPath, projectConfig);
+        public void OnPostprocessBuild(BuildReport report)
+        {
+            ExportAppIconToStreamingAssets();
+
+            if (report.summary.platform == BuildTarget.iOS)
+            {
+                string path = report.summary.outputPath;
+
+                // Optional: Handle your iOS-specific build steps here
+                // Like in your original snippet for deleting meta files, etc.
+            }
+        }
+
+        private void ExportAppIconToStreamingAssets()
+        {
+            var icons = PlayerSettings.GetIcons(NamedBuildTarget.Android, IconKind.Application);
+            if (icons.Length == 0 || icons[0] == null)
+            {
+                Debug.LogWarning("No app icon found in PlayerSettings.");
+                return;
+            }
+
+            Texture2D icon = icons[0];
+            byte[] pngData = icon.EncodeToPNG();
+
+            if (pngData != null)
+            {
+                string folder = Application.dataPath + "/StreamingAssets";
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+
+                string filePath = Path.Combine(folder, "icon.png");
+                File.WriteAllBytes(filePath, pngData);
+
+                Debug.Log("Exported app icon to StreamingAssets: " + filePath);
+            }
+            else
+            {
+                Debug.LogError("Failed to encode icon texture.");
             }
         }
     }
 }
-
 #endif

@@ -31,7 +31,7 @@ namespace Isorld.XR.IsoVR
     public class XRSettings : ScriptableObject
     {
         public string FullName = "IsoVR";
-        public float IPD = 0.5f;
         public bool webSupport = false;
+        
     }
 }
